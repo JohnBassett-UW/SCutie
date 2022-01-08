@@ -24,7 +24,7 @@ import10x <- function(path, type = "unspecified", ESNG = F){
 
 ####Define sub routines#########################################################
 
-  ##SUBROUTINE##
+  ##subRoutine##
   #compile_dgCMatrix#
   compile_dgCMatrix <- function(tables.list) { #formatting function for dgCMatrices
 
@@ -41,7 +41,7 @@ import10x <- function(path, type = "unspecified", ESNG = F){
     data <- as(data, Class = "dgCMatrix") # cast from 'T' to 'C' representation
   }
 
-  ##SUBROUTINE##
+  ##subRoutine##
   #Check_for_file_exceptions#
   check_file_exceptions <- function(path, type) { #format and detect file type
 
@@ -73,7 +73,7 @@ import10x <- function(path, type = "unspecified", ESNG = F){
     return(stop("invalid file or file type", call. = F))
   }
 
-  ##SUBROUTINE##
+  ##subRoutine##
   #dir_contains_ffbcmat#
   dir_contains_ffbcmat <- function(path){      #check folder contents for subfiles of ff_bc_matrix
 
@@ -95,6 +95,36 @@ import10x <- function(path, type = "unspecified", ESNG = F){
     return(all(recognized))
   }
 
+  dimnames_make_unique <- function(data_10x){ #checks imported matrix for duplicate dimnames. makes gene symbols unique
+    if(any(duplicated(dimnames(data_10x)[[2]]))){
+      warning("duplicate UMI's found in data set ") #Does not alter UMIs, but warns the user
+    }
+
+    dupes <- duplicated(dimnames(data_10x)[[1]]) #TODO!!! HANDLE DUPLICATE GENE SYMBOLS
+    if(any(dupes)){
+      if(verbose = T){
+        warning("duplicate gene symbols in data set")
+        message("Unique names will automatically be generated for all duplicates")
+      }
+
+      #pseudo-code for recursively enumerating duplicates
+
+      # function(count = 0)
+      #   count = count ++
+      #   if has duplicates
+      #     locate all duplicate values
+      #     change all duplicate values to value.count
+      #     function(count)
+      #   else return
+      #
+
+        #dupes <- dimnames(data_10x)[[1]][dupes] #recursively enumerate duplicates.
+        #for(symbol in dupes){
+          #match(symbol, dimnames(data_10x)[[1]])
+        #}
+    }
+  }
+
 ####allocate fun vars###########################################################
   tables.list <- list()
   type <- check_file_exceptions(path, type) #appropriately handle user input for type and path
@@ -114,7 +144,7 @@ import10x <- function(path, type = "unspecified", ESNG = F){
                      if(substr(set, nchar(set)-5, nchar(set)-3) == "tsv"){
                        tables.list[[table.index]] <- read.table(file.path(path, set))
                     }else{
-                      message("Large matrices may take a minute to load...")
+                      message("Large matrices may take a minute to process...")
                       tables.list[[table.index]]<- Matrix::readMM(file = file.path(path, set))
                       }
                    }
@@ -159,6 +189,7 @@ import10x <- function(path, type = "unspecified", ESNG = F){
 
   cat("Done. \n time ")
   print((proc.time() - ptm)[3]) #print time elapsed
+
 
   return(data_10x)
 }
