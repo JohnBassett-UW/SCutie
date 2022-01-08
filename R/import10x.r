@@ -95,35 +95,35 @@ import10x <- function(path, type = "unspecified", ESNG = F){
     return(all(recognized))
   }
 
-  dimnames_make_unique <- function(data_10x){ #checks imported matrix for duplicate dimnames. makes gene symbols unique
-    if(any(duplicated(dimnames(data_10x)[[2]]))){
-      warning("duplicate UMI's found in data set ") #Does not alter UMIs, but warns the user
-    }
-
-    dupes <- duplicated(dimnames(data_10x)[[1]]) #TODO!!! HANDLE DUPLICATE GENE SYMBOLS
-    if(any(dupes)){
-      if(verbose = T){
-        warning("duplicate gene symbols in data set")
-        message("Unique names will automatically be generated for all duplicates")
-      }
-
-      #pseudo-code for recursively enumerating duplicates
-
-      # function(count = 0)
-      #   count = count ++
-      #   if has duplicates
-      #     locate all duplicate values
-      #     change all duplicate values to value.count
-      #     function(count)
-      #   else return
-      #
-
-        #dupes <- dimnames(data_10x)[[1]][dupes] #recursively enumerate duplicates.
-        #for(symbol in dupes){
-          #match(symbol, dimnames(data_10x)[[1]])
-        #}
-    }
-  }
+  # dimnames_make_unique <- function(data_10x){ #checks imported matrix for duplicate dimnames. makes gene symbols unique
+  #   if(any(duplicated(dimnames(data_10x)[[2]]))){
+  #     warning("duplicate UMI's found in data set ") #Does not alter UMIs, but warns the user
+  #   }
+  #
+  #   dupes <- duplicated(dimnames(data_10x)[[1]]) #TODO!!! HANDLE DUPLICATE GENE SYMBOLS
+  #   if(any(dupes)){
+  #     if(verbose = T){
+  #       warning("duplicate gene symbols in data set")
+  #       message("Unique names will automatically be generated for all duplicates")
+  #     }
+  #
+  #     #pseudo-code for recursively enumerating duplicates
+  #
+  #     # function(count = 0)
+  #     #   count = count ++
+  #     #   if has duplicates
+  #     #     locate all duplicate values
+  #     #     change all duplicate values to value.count
+  #     #     function(count)
+  #     #   else return
+  #     #
+  #
+  #       #dupes <- dimnames(data_10x)[[1]][dupes] #recursively enumerate duplicates.
+  #       #for(symbol in dupes){
+  #         #match(symbol, dimnames(data_10x)[[1]])
+  #       #}
+  #   }
+  # }
 
 ####allocate fun vars###########################################################
   tables.list <- list()
