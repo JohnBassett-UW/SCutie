@@ -94,36 +94,40 @@ import10x <- function(path, type = "unspecified", ESNG = F){
 
     return(all(recognized))
   }
-
-  # dimnames_make_unique <- function(data_10x){ #checks imported matrix for duplicate dimnames. makes gene symbols unique
-  #   if(any(duplicated(dimnames(data_10x)[[2]]))){
-  #     warning("duplicate UMI's found in data set ") #Does not alter UMIs, but warns the user
-  #   }
-  #
-  #   dupes <- duplicated(dimnames(data_10x)[[1]]) #TODO!!! HANDLE DUPLICATE GENE SYMBOLS
-  #   if(any(dupes)){
-  #     if(verbose = T){
-  #       warning("duplicate gene symbols in data set")
-  #       message("Unique names will automatically be generated for all duplicates")
-  #     }
-  #
-  #     #pseudo-code for recursively enumerating duplicates
-  #
-  #     # function(count = 0)
-  #     #   count = count ++
-  #     #   if has duplicates
-  #     #     locate all duplicate values
-  #     #     change all duplicate values to value.count
-  #     #     function(count)
-  #     #   else return
-  #     #
-  #
-  #       #dupes <- dimnames(data_10x)[[1]][dupes] #recursively enumerate duplicates.
-  #       #for(symbol in dupes){
-  #         #match(symbol, dimnames(data_10x)[[1]])
-  #       #}
-  #   }
-  # }
+  
+  ##SubRoutine#
+  #generate_unique_names#
+  generate_unique_names <- function(char_names, count = 0){ #accepts character vector of duplicate names
+    count = count + 1
+    dupes <- duplicated(char_names) # logical vector of duplicate indices
+    dup_names <- char_names[dupes] # character vector of duplicate names
+    
+    if(length(dup_names) == 0){
+      return(paste(char_names[!dupes], ".", count, sep = ""))
+    }
+    
+    char_names[dupes] <- generate_unique_names(dup_names, count)
+    char_names[!dupes] <- paste(char_names[!dupes], ".", count, sep = "") # set non-duplicate elements to enumerated name
+    return(char_names)
+  }
+  
+  ##subRoutine##
+  #dimnames_unique#
+  dimnames_unique <- function(data_10x){
+    if(any(duplicated(dimnames(data_10x)[[2]]))){
+      warning("duplicate UMI's found in data set")
+    }
+    
+    dupes <- duplicated(dimnames(data_10x)[[1]]) #logical vector of duplicate indices
+    
+    if(any(dupes)){
+      message("Warning in column names: gene symbols contain duplicate identities")
+      dup_names <- dimnames(data_10x)[[1]][dupes] #character vector of duplicate names
+      dimnames(data_10x)[[1]][dupes] <- generate_unique_names(dup_names)
+      message("All column names have been made unique")
+    }
+  }
+  
 
 ####allocate fun vars###########################################################
   tables.list <- list()
@@ -186,10 +190,10 @@ import10x <- function(path, type = "unspecified", ESNG = F){
                    compile_dgCMatrix(tables.list)
                  }
                  )
-
-  cat("Done. \n time ")
+  
+  cat("[*_*] Done. \n time ")
   print((proc.time() - ptm)[3]) #print time elapsed
 
 
-  return(data_10x)
+  return(dimnames_unique(data_10x))
 }
