@@ -97,7 +97,8 @@ import10x <- function(path, type = "unspecified", ESNG = F){
   
   ##SubRoutine#
   #generate_unique_names#
-  generate_unique_names <- function(char_names, count = 0){ #accepts character vector of duplicate names
+  #Example: (TBCE, TBCE, TBCE) -> (TBCE.1, TBCE.2, TBCE.3)
+  generate_unique_names <- function(char_names, count = 0){ #accepts character vector of duplicate names and returns a vector of equal length containing unique elements
     count = count + 1
     dupes <- duplicated(char_names) # logical vector of duplicate indices
     dup_names <- char_names[dupes] # character vector of duplicate names
@@ -112,7 +113,8 @@ import10x <- function(path, type = "unspecified", ESNG = F){
   }
   
   ##subRoutine##
-  #dimnames_unique#
+  #dimnames_unique# 
+  #checks if dimension names are unique. If UMIs are not unique, issues a warning. If gene symbols are not unique, replace duplicates with unique gene symbol names
   dimnames_unique <- function(data_10x){
     if(any(duplicated(dimnames(data_10x)[[2]]))){
       warning("duplicate UMI's found in data set")
