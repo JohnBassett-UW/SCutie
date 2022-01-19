@@ -94,7 +94,7 @@ import10x <- function(path, type = "unspecified", ESNG = F){
 
     return(all(recognized))
   }
-  
+
   ##SubRoutine#
   #generate_unique_names#
   #Example: (TBCE, TBCE, TBCE) -> (TBCE.1, TBCE.2, TBCE.3)
@@ -102,34 +102,38 @@ import10x <- function(path, type = "unspecified", ESNG = F){
     count = count + 1
     dupes <- duplicated(char_names) # logical vector of duplicate indices
     dup_names <- char_names[dupes] # character vector of duplicate names
-    
+
     if(length(dup_names) == 0){
       return(paste(char_names[!dupes], ".", count, sep = ""))
     }
-    
+
     char_names[dupes] <- generate_unique_names(dup_names, count)
     char_names[!dupes] <- paste(char_names[!dupes], ".", count, sep = "") # set non-duplicate elements to enumerated name
     return(char_names)
   }
-  
+
   ##subRoutine##
-  #dimnames_unique# 
+  #dimnames_unique#
   #checks if dimension names are unique. If UMIs are not unique, issues a warning. If gene symbols are not unique, replace duplicates with unique gene symbol names
   dimnames_unique <- function(data_10x){
     if(any(duplicated(dimnames(data_10x)[[2]]))){
       warning("duplicate UMI's found in data set")
     }
-    
+
     dupes <- duplicated(dimnames(data_10x)[[1]]) #logical vector of duplicate indices
-    
+
     if(any(dupes)){
       message("Warning in column names: gene symbols contain duplicate identities")
       dup_names <- dimnames(data_10x)[[1]][dupes] #character vector of duplicate names
       dimnames(data_10x)[[1]][dupes] <- generate_unique_names(dup_names)
       message("All column names have been made unique")
+      return(data_10x)
+    }else{
+      cat("All column names verified unique \n")
+      return(data_10x)
     }
   }
-  
+
 
 ####allocate fun vars###########################################################
   tables.list <- list()
@@ -192,7 +196,7 @@ import10x <- function(path, type = "unspecified", ESNG = F){
                    compile_dgCMatrix(tables.list)
                  }
                  )
-  
+
   cat("[*_*] Done. \n time ")
   print((proc.time() - ptm)[3]) #print time elapsed
 
