@@ -12,6 +12,9 @@ setMethod( f = "[",
            signature = c("SC_obj"),
            definition = function(x, i, j, ...){
              if(missing(i)){
+               if(missing(j)){
+                 return(x@raw.data)
+               }
                x@raw.data[,j]
              }
              else if(missing(j)){
@@ -23,10 +26,21 @@ setMethod( f = "[",
            })
 
 setMethod( f = "[[",
-  signature = c("SC_obj"),
-  definition = function(x, i, j, ...){
-    return(x@meta.data[i]);
-  });
+           signature = c("SC_obj"),
+           definition = function(x, i, j, ...){
+             if(missing(i)){
+               if(missing(j)){
+                 return(x@meta.data)
+               }
+               x@meta.data[,j]
+             }
+             else if(missing(j)){
+               x@meta.data[i,]
+             }
+             else{
+               return(x@meta.data[i,j])
+             }
+           })
 
 setMethod( f = "[[<-",
   signature = c("SC_obj"),
@@ -41,8 +55,13 @@ setMethod(f = "dimnames",
             return(dimnames(x@raw.data))
           })
 
-
 ###############################################################################
+select <- function(x, meta.logical){ #this is wonky af
+  y <- x@meta.data[x@meta.data[,meta.logical],]
+  y <- rownames(y) #TODO make this less error prone
+  return(x@raw.data[,y])
+}
+
 addGraph <-function(x, value){
   x@graphs <- c(x@graphs, list(value))
   return(x)
@@ -58,7 +77,7 @@ remove1 <- function(data.10x){
   return(data.10x)
 }
 
-ExtractMetaData <- function(data.10x){
+initializeMetaData <- function(data.10x){ ##function for initializing metadata from count matrix for sc_obj
   meta.data<- data.frame(Matrix::colSums(data.10x))
   meta.data[,2] <- diff(data.10x@p)
   names(meta.data) <- c("nCount_RNA", "nFeatures_RNA")
@@ -71,5 +90,5 @@ newSC_obj <- function(data.10x, remove1 = T){
   }
   new(Class = "SC_obj",
       raw.data = data.10x,
-      meta.data = ExtractMetaData(data.10x))
+      meta.data = initializeMetaData(data.10x))
 }
