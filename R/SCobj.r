@@ -45,8 +45,20 @@ setMethod( f = "[[",
 setMethod( f = "[[<-",
   signature = c("SC_obj"),
   definition = function(x,i,j,value) {
-    x@meta.data[i] <- value
-    return(x)
+    if(missing(i)){
+      if(missing(j)){
+        x@meta.data <- value
+        print("whoops")
+      }
+      print("here")
+      x@meta.data[,j] <- value
+    }
+    else if(missing(j)){
+      x@meta.data[i,] <- value
+    }
+    else{
+      x@meta.data[i,j] <- value
+    }
   })
 
 setMethod(f = "dimnames",

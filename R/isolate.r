@@ -1,22 +1,26 @@
-isolate <- function(x, node = NULL, depth = 0){
-  Qx <- quantile(x, probs = seq(0, 1, 0.01))
-  if(is.null(node)){
-    node = sample(x, 1)
-  }else{
-    node = sample
+isolate <- function(sc_obj, max_depth = NULL, verbose = F){
+  if(is.null(max_depth)){
+    max_depth = 2*(ceiling(log2(nrow(x))))
   }
-
-  while(depthMax = F){
-    ZeroNode = sample(x, 1)
-    Zstat = min(which(Qx >= ZeroNode))-1
-    MaxNode = max(x) - ZeroNode
-  }
+  x = sc_obj[[]]
+  iforest <- solitude::isolationForest$new(sample_size = ceiling(nrow(x)/10), 
+                                           seed = 101,
+                                           num_trees = 100,
+                                           max_depth = max_depth
+  )
+  iforest$fit(x)
+  scores = iforest$predict(x)
+  Amin <- min(scores[,3])
+  Amax <- max(scores[,3])
+  if(verbose){cat("Anomaly Score Range: ", Amin, "to" , Amax, "\n")}
+  if(Amin > 0.5){
+      warning("Min anomaly score > 0.5")
+      stop("Outlier Detection failed")
+    }
+  index <- (which(scores[,3]>0.5))
+  anomalies <- rep(F, nrow(sc_obj[[]]) )
+  anomalies[index] <- T
+  sc_obj <- addMetaData(sc_obj, anomalies, col.name = "Anomaly")
+  cat("Predicted anomaly rate: ", length(which(sc_obj[[,"Anomaly"]] > 0))/nrow(sc_obj[[]]))
+  return(sc_obj)
 }
-
-#bin by quantile
-#sample random value from data
-#subset the data to only values which are > sample
-#keep doing this until you have no values left
-#keep track of 'H' many time you did this
-#repeat for 'n' number of times
-#values which have big H are more likely outliers

@@ -48,5 +48,3 @@ est_doublets <- function(counts, method = "hybrid"){
         )
   return(list(as.numeric(fDoublets), calls))
 }
-
-
