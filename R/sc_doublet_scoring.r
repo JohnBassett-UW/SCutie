@@ -46,5 +46,6 @@ est_doublets <- function(counts, method = "hybrid"){
            calls = sce$hybrid_call
          }
         )
+  cat("approximate doublet rate: ", fDoublets, "\n")
   return(list(as.numeric(fDoublets), calls))
 }

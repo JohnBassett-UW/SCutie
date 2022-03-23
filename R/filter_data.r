@@ -33,22 +33,31 @@ Attach_QC <- function(sc_obj, pattern = "default"){
 
   glist<- c(glist, list(nCount_qc))
 
-  complete_qc <- gridExtra::grid.arrange(grobs = glist)
+  cat("generating raw data QC... \n")
+  complete_qc <- gridExtra::arrangeGrob(grobs = glist)
 
   sc_obj <- addGraph(x = sc_obj, value = complete_qc)
 
   return(sc_obj)
 }
 
-detect_anomalies <- function(sc_obj, method = "isolation"){
+detect_anomalies <- function(sc_obj, method = "isolation", verbose = T){
+  cat("simulating doublets... \n")
   sc_obj <- switch(method,
 
-                   "isolation" = {isolate(sc_obj)},
+                   "isolation" = {
+                      doublets = est_doublets(sc_obj, method = 'cxds')
+                      sc_obj <- set_doublet_rate(sc_obj, doublets[[1]])
+                      cat("detecting anomalies... \n")
+                      isolate(sc_obj)
+                     },
 
-                   "doublet_scoring"= {anomalies <- est_doublets(sc_obj)
-                                       cat("Predicted doublet rate: ", anomalies[[1]], "\n")
-                                       addMetaData(sc_obj, anomalies[[2]], col.name = "Anomaly")
-                                      }
+                   "doublet_scoring"= {
+                      doublets <- est_doublets(sc_obj)
+                      cat("Predicted doublet rate: ", doublets[[1]], "\n")
+                      sc_obj <- addMetaData(sc_obj, doublets[[2]], col.name = "Anomaly")
+                      set_doublet_rate(sc_obj, doublets[[1]])
+                    }
                    )
 
   glist <- list()
@@ -58,7 +67,8 @@ detect_anomalies <- function(sc_obj, method = "isolation"){
     fplot <- scatter(sc_obj[[]], x = "nCount_RNA", y = value, color = "Anomaly")
     glist <- c(glist, list(fplot))
   }
-  complete_qc <- gridExtra::grid.arrange(grobs = glist)
+  cat("generating anomaly detection QC...  \n")
+  complete_qc <- gridExtra::arrangeGrob(grobs = glist)
   sc_obj <- addGraph(x = sc_obj, value = complete_qc)
 
   return(sc_obj)
@@ -70,6 +80,7 @@ rm_anomalies <- function(sc_obj){
   }
   data.rm_anom <- sc_obj[][,which(!sc_obj[[,"Anomaly"]])] #TODO check access method
   sc_obj@assay <- list(anomalies_removed = data.rm_anom) #TODO change access method
-  cat(ncol(sc_obj@raw.data)-ncol(sc_obj@assay$anomalies_removed), "anomalies not carried over")
+  cat("[*_*] done. \n")
+  cat(ncol(sc_obj@raw.data)-ncol(sc_obj@assay$anomalies_removed), "anomalies not carried over \n")
   return(sc_obj)
 }

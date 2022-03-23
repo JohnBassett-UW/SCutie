@@ -4,7 +4,8 @@ SC_obj <- setClass(Class = "SC_obj",
                     assay = 'list',
                     meta.data = 'data.frame',
                     graphs = 'list',
-                    ident = 'factor'
+                    ident = 'factor',
+                    est_doublet_rate = 'numeric'
                   )
 )
 
@@ -103,4 +104,13 @@ newSC_obj <- function(data.10x, remove1 = T){
   new(Class = "SC_obj",
       raw.data = data.10x,
       meta.data = initializeMetaData(data.10x))
+}
+
+set_doublet_rate <- function(sc_obj, doublet_rate){
+  sc_obj@est_doublet_rate = doublet_rate
+  return(sc_obj)
+}
+
+doublet_rate <- function(sc_obj){
+  return(sc_obj@est_doublet_rate)
 }
