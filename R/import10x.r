@@ -18,15 +18,37 @@
 #'
 #' path_to_file <- '/path/to/data.h5'
 #' data <- import10x(path = path_to_file, ESNG = T)
-import10x <- function(path, type = "unspecified", ESNG = F){
+import10x <- function(path, type = "unspecified", ESNG = F, garbage_collection = T){
   supported_file_types <- c("ff_bc_matrix", "h5")
   ptm <- proc.time() #set time start
 
 ####Define sub routines#########################################################
+  ##subRoutine##
+  #extract_table_names#
+  extract_table_names <- function(tables.list, check = F){
+    tables.names <- names(tables.list)
+    components <- c("barcodes", "features", "matrix")
 
+    for(name in components){
+      index <- grep(name, tables.names)
+      names(tables.list)[index] <- name
+    }
+
+    matched = which(components %in% names(tables.list))
+
+    if(length(matched) == 3){
+      return(tables.list)
+    }else if(length(matched) == 2){
+      names(tables.list)[-matched] <- components[-matched]
+      return(tables.list)
+    }else{
+      message("unable to match files to content")
+      stop("file names must contain values 'barcodes', 'features', and 'matrix'")
+    }
+  }
   ##subRoutine##
   #compile_dgCMatrix#
-  compile_dgCMatrix <- function(tables.list) { #formatting function for dgCMatrices
+  compile_dgCMatrix <- function(tables.list, attempt = 0) { #formatting function for dgCMatrices
 
     if(inherits(tables.list[["barcodes"]], "data.frame") == T){ #check if barcodes are data.frame and coerce to character vector
       tables.list[["barcodes"]] <- tables.list[["barcodes"]][,1]
@@ -38,6 +60,8 @@ import10x <- function(path, type = "unspecified", ESNG = F){
                                            tables.list[["barcodes"]]) ,
                            forceCheck = T,
                            doDiag = F)
+
+
     data <- as(data, Class = "dgCMatrix") # cast from 'T' to 'C' representation
   }
 
@@ -78,21 +102,22 @@ import10x <- function(path, type = "unspecified", ESNG = F){
   dir_contains_ffbcmat <- function(path){      #check folder contents for subfiles of ff_bc_matrix
 
     cat("searching directory for associated files \n")
-    dir.contents <- strsplit(dir(path), split = "\\.")
+    dir.contents <- dir(path)
+    extensions <- strsplit(dir(path), split = "\\.")
     components <- c("barcodes", "features", "matrix")
-    recognized <- c(F, F, F)
+    recognized <- c(F,F,F)
 
-    if(all(lengths(dir.contents) <= 1)){  #throw exception if files don't have extensions
+    if(all(lengths(extensions) <= 1)){  #throw exception if files don't have extensions
       return(stop("path contains only directories or files without recognizeable extensions"))
     }
 
-    for(i in 1:length(dir.contents)){
-      recognized <- components %in% dir.contents[[i]] | recognized
+    for(i in 1:length(components)){
+      recognized[i] <- length(grep(components[i], dir.contents)) > 0
     }
 
     cat(paste("location contains", + length(dir.contents), "files \n"))
 
-    return(all(recognized))
+    return(sum(recognized) >= 2)
   }
 
   ##SubRoutine#
@@ -148,6 +173,7 @@ import10x <- function(path, type = "unspecified", ESNG = F){
 
                    #import files as elements of a list
                    cat("importing data from file: \n")
+                   if(garbage_collection == T){gc()}
                    for(set in dir(path)){
                      cat(paste(set, "\n"))
                      table.index <- substr(set, 0, nchar(set)-7)
@@ -158,10 +184,11 @@ import10x <- function(path, type = "unspecified", ESNG = F){
                       tables.list[[table.index]]<- Matrix::readMM(file = file.path(path, set))
                       }
                    }
+                   if(garbage_collection == T){gc()}
+                   tables.list <- extract_table_names(tables.list)
                    if(ESNG == T){tables.list[["features"]] <- tables.list[["features"]][,1]}else{
                      tables.list[["features"]] <- tables.list[["features"]][,2]
                    }
-
                    compile_dgCMatrix(tables.list) #compile imported files into a single dgCMatrix by index
                  },
                  "h5" = { ######################################################

@@ -1,5 +1,5 @@
 #add credit to solitude
-isolate <- function(sc_obj, max_depth = NULL, verbose = F){
+isolate <- function(sc_obj, max_depth =NULL, verbose = F){
   if(is.null(max_depth)){
     max_depth = (ceiling(log2(nrow(sc_obj[[]]))))
   }

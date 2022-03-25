@@ -1,13 +1,5 @@
-# violin <- function(data, y, split_by, quants = NULL){
-#   vplot <- ggplot2::ggplot(data, ggplot2::aes_string(y = y, x = split_by)) +
-#     ggplot2::geom_violin(ggplot2::aes(fill = "green"), show.legend = F) +
-#     ggplot2::geom_jitter(size = 0.5)
-#     if(!is.null(quants)){vplot <- vplot + ggplot2::geom_hline(yintercept = quants)}
-#   return(vplot)
-# }
-
 scatter<- function(data, x, y, color = NULL){
-  Splot <- ggplot2::ggplot(data, ggplot2::aes_string(x = x, y = y, color = color)) + ggplot2::geom_point() #attach plot to obj
+  Splot <- ggplot2::ggplot(data, ggplot2::aes_string(x = x, y = y, color = color)) + ggplot2::geom_point(size = 0.25) #attach plot to obj
   return(Splot)
 }
 
