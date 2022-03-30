@@ -4,10 +4,10 @@ isolate <- function(sc_obj, max_depth =NULL, verbose = F){
     max_depth = (ceiling(log2(nrow(sc_obj[[]]))))
   }
   anomaly_rate = 1
-  while(anomaly_rate >= doublet_rate(sc_obj) | max_depth > 500){
+  while(anomaly_rate >= doublet_rate(sc_obj) & max_depth < 500){
     max_depth = 2*max_depth
     x = sc_obj[[]]
-    iforest <- solitude::isolationForest$new(sample_size = ceiling(nrow(x)/10), 
+    iforest <- solitude::isolationForest$new(sample_size = ceiling(nrow(x)/10),
                                              seed = 101,
                                              num_trees = 100,
                                              max_depth = max_depth

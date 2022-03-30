@@ -9,7 +9,7 @@ QC_pipeline <- function(data.path){
   sce <- Attach_QC(sce)
   sce <- detect_anomalies(sce)
   sce <- rm_anomalies(sce)
-  
+
   cat("Total \n time ")
   print((proc.time() - ptm)[3]) #print time elapsed
   return(sce)
@@ -25,12 +25,12 @@ sc_to_Seurat <- function(sc_obj){
 ccSeurat <- function(){
   s.genes <- cc.genes$s.genes
   g2m.genes <- cc.genes$g2m.genes
-  
+
   obj_seurat <- NormalizeData(obj_seurat)
   obj_seurat <- FindVariableFeatures(obj_seurat, selection.method = "vst")
   obj_seurat <- ScaleData(obj_seurat, features = rownames(obj_seurat))
   obj_seurat <- RunPCA(obj_seurat, features = VariableFeatures(obj_seurat))
-  
+
   DimHeatmap(obj_seurat)
 }
 
@@ -38,3 +38,11 @@ ccSeurat <- function(){
 sce <- pipeline(data.path)
 obj_seurat <- sc_to_Seurat(sce)
 gridExtra::grid.arrange(sce@graphs[[2]])
+
+
+counts <- import10x(data.path)
+sce2 <- newSC_obj(dat)
+sce2 <- Attach_QC(sce2)
+sce2 <- detect_anomalies(sce2)
+sce2 <- rm_anomalies(sce2)
+
