@@ -1,4 +1,4 @@
-data.path <- "C:/Users/jbassett/Desktop/github/Data/UW36/filtered_feature_bc_matrix.h5"
+data.path <-
 #hto.path <-
 
 #Import and qc filter
