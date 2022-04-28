@@ -32,6 +32,15 @@ ccSeurat <- function(){
   obj_seurat <- RunPCA(obj_seurat, features = VariableFeatures(obj_seurat))
 
   DimHeatmap(obj_seurat)
+
+  obj_seurat <- CellCycleScoring(obj_seurat, s.features = s.genes, g2m.features = g2m.genes, set.ident = TRUE)
+  # view cell cycle scores and phase assignments
+  head(obj_seurat[[]])
+  # Visualize the distribution of cell cycle markers across
+  RidgePlot(obj_seurat, features = c("PCNA", "TOP2A", "MCM6", "MKI67"), ncol = 2)
+
+  obj_seurat <- RunPCA(obj_seurat, features = c(s.genes, g2m.genes))
+  DimPlot(obj_seurat)
 }
 
 
