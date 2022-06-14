@@ -1,4 +1,23 @@
-#add credit to solitude
+#' isolate
+#'
+#' To generate isolation forests isolate makes use of 'solitude'
+#' https://CRAN.R-project.org/package=solitude
+#' Komala Sheshachala Srikanth [aut, cre], David Zimmermann [ctb]
+#'
+#' outliers are detected using an isolation forest and their identities are
+#' attached to the metadata of the sc_obj output.
+#'
+#'
+#' @param sc_obj
+#' @param max_depth
+#' @param verbose
+#'
+#' @importFrom solitude isolationForest
+#
+#' @return an sc_obj containing the identities of outliers in the metadata
+#'
+#'
+#' @examples
 isolate <- function(sc_obj, max_depth =NULL, verbose = F){
   if(is.null(max_depth)){
     max_depth = (ceiling(log2(nrow(sc_obj[[]]))))
