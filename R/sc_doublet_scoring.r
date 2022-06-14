@@ -7,7 +7,7 @@
 #' @param counts alternately accepts sc_obj
 #' @param counts alternately accepts SingleCellExperiment Object
 #' @param method defaults to "hybrid". Alternately "cxds" or "bcds" can be used
-#' @importFrom scds cxds bcds cxds_bcds_hyrbrid
+#' @importFrom scds cxds bcds cxds_bcds_hybrid
 #' @importFrom SingleCellExperiment SingleCellExperiment
 #' @return estimate of the proportion of doublets
 #' @export
