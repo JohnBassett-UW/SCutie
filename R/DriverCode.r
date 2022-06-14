@@ -44,14 +44,14 @@ ccSeurat <- function(){
 }
 
 
-sce <- pipeline(data.path)
-obj_seurat <- sc_to_Seurat(sce)
-gridExtra::grid.arrange(sce@graphs[[2]])
+#sce <- pipeline(data.path)
+#obj_seurat <- sc_to_Seurat(sce)
+#gridExtra::grid.arrange(sce@graphs[[2]])
 
 
-counts <- import10x(data.path)
-sce2 <- newSC_obj(dat)
-sce2 <- Attach_QC(sce2)
-sce2 <- detect_anomalies(sce2)
-sce2 <- rm_anomalies(sce2)
+#counts <- import10x(data.path)
+#sce2 <- newSC_obj(dat)
+#sce2 <- Attach_QC(sce2)
+#sce2 <- detect_anomalies(sce2)
+#sce2 <- rm_anomalies(sce2)
 
