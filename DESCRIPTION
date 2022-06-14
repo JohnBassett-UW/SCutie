@@ -18,4 +18,7 @@ biocViews:
 Imports:
 	SingleCellExperiment,
 	hdf5r,
-	scds
+	scds,
+	ggplot2,
+	gridExtra,
+	solitude
