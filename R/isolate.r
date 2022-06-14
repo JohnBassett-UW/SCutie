@@ -8,9 +8,9 @@
 #' attached to the metadata of the sc_obj output.
 #'
 #'
-#' @param sc_obj
-#' @param max_depth
-#' @param verbose
+#' @param sc_obj an sc_obj with attached qc
+#' @param max_depth Binary tree depth, default is 500.
+#' @param verbose By default is set to False
 #'
 #' @importFrom solitude isolationForest
 #
@@ -18,6 +18,7 @@
 #'
 #'
 #' @examples
+#' isolate(sc_obj)
 isolate <- function(sc_obj, max_depth =NULL, verbose = F){
   if(is.null(max_depth)){
     max_depth = (ceiling(log2(nrow(sc_obj[[]]))))

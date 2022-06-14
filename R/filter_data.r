@@ -2,10 +2,10 @@
 #'
 #' Covenience function for generating scatter plots with ggplot2
 #'
-#' @param data
-#' @param x
-#' @param y
-#' @param color
+#' @param data dataset to generate plot from
+#' @param x data to map to x axis
+#' @param y data to map to y axis
+#' @param color color
 #'
 #' @return ggplot
 #' @importFrom ggplot2 ggplot aes_string geom_point
@@ -75,7 +75,7 @@ Attach_QC <- function(sc_obj, pattern = "default"){
 #' @param sc_obj an sc_obj with attached QC
 #' @param method By default method is set to "isolation" for anomaly detection. "doublet_scoring" may be used
 #' to perform troubleshooting tasks but will not detect anomalies.
-#' @param verbose
+#' @param verbose By default is set to True
 #'
 #' @importFrom gridExtra arrangeGrob
 #'
@@ -125,7 +125,7 @@ detect_anomalies <- function(sc_obj, method = "isolation", verbose = T){
 #' Convenience function which generate a new sc_obj assay containing the dataset
 #' after anomalies have been removed. Raw data remains intact.
 #'
-#' @param sc_obj
+#' @param sc_obj an sc_obj with attached QC.
 #'
 #' @return sc_obj with anomalies removed from the active dataset
 #' @export
