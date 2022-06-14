@@ -1,4 +1,4 @@
-Package: Dmultiplex
+Package: SCutie
 Title: Seurat-integrated hashed cell demultiplexing tools
 Version: 0.0.0.9000
 Authors@R:
