@@ -177,12 +177,12 @@ import10x <- function(path, type = "unspecified", ESNG = F, garbage_collection =
                        if(garbage_collection == T){gc()}
                        for(set in dir(path)){
                          cat(paste(set, "\n"))
-                         table.index <- substr(set, 0, nchar(set)-7)
-                         if(substr(set, nchar(set)-5, nchar(set)-3) == "tsv"){
-                           tables.list[[table.index]] <- read.table(file.path(path, set))
+                         table.index <- strsplit(set, "\\.")[[1]]
+                         if(table.index[2] == "tsv"){
+                           tables.list[[table.index[1]]] <- read.table(file.path(path, set))
                          }else{
                            message("Large matrices may take a minute to process...")
-                           tables.list[[table.index]]<- Matrix::readMM(file = file.path(path, set))
+                           tables.list[[table.index[1]]]<- Matrix::readMM(file = file.path(path, set))
                          }
                        }
                        if(garbage_collection == T){gc()}
