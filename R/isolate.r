@@ -24,7 +24,7 @@ isolate <- function(sc_obj, max_depth =NULL, verbose = F){
     max_depth = (ceiling(log2(nrow(sc_obj[[]]))))
   }
   anomaly_rate = 1
-  while(anomaly_rate >= doublet_rate(sc_obj) & max_depth < 500){
+  while(anomaly_rate >= est_doublet_rate(sc_obj) & max_depth < 500){
     max_depth = 2*max_depth
     x = sc_obj[[]]
     iforest <- solitude::isolationForest$new(sample_size = ceiling(nrow(x)/10),
@@ -46,7 +46,7 @@ isolate <- function(sc_obj, max_depth =NULL, verbose = F){
     anomalies[index] <- T
     anomaly_rate = length(which(anomalies > 0))/nrow(sc_obj[[]])
   }
-  sc_obj <- addMetaData(sc_obj, anomalies, col.name = "Anomaly")
+  metaData(sc_obj,"Anomaly") <- anomalies
   if(verbose){cat("Predicted anomaly rate: ", anomaly_rate, "\n")}
   return(sc_obj)
 }

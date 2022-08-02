@@ -1,11 +1,21 @@
-data.path <-
-#hto.path <-
+HTO_path <- "Z:/paddison_lab/John/scData/UW44scx/HTO_lib_Trt(UW44scx02)/U44scx02_HTO/umi_count"
+GeX_path <- "C:/Users/basse/Documents/UW/scData_local/UW44/UW44scx_02/outs/filtered_feature_bc_matrix.h5"
+
+HTO_counts <- importX(HTO_path)
+GeX_counts <- importX(GeX_path)
+sce <- newSC_obj(GeX_counts, HTO_counts)
+sce <- Attach_QC(sce)
+Graph(sce, "Quality Check")
+sce <- detect_anomalies(sce, method = 'cxds')
+Graph(sce, "Anomalies")
+sce <- rm_anomalies(sce)
+
 
 #Import and qc filter
 QC_pipeline <- function(data.path){
   ptm = proc.time()
   counts <- import10x(data.path)
-  sce <- newSC_obj(counts)
+  sce <- newSC_obj(GeX_counts, HTO_counts)
   sce <- Attach_QC(sce)
   sce <- detect_anomalies(sce)
   sce <- rm_anomalies(sce)
@@ -46,7 +56,7 @@ ccSeurat <- function(){
 
 #sce <- pipeline(data.path)
 #obj_seurat <- sc_to_Seurat(sce)
-#gridExtra::grid.arrange(sce@graphs[[2]])
+gridExtra::grid.arrange(sce@graphs[[1]])
 
 
 #counts <- import10x(data.path)

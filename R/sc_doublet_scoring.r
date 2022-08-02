@@ -19,7 +19,7 @@
 #' est_doublets(counts, method = "hybrid")
 #'
 est_doublets <- function(counts, method = "hybrid"){
-  if(inherits(counts, "SC_obj")){
+  if(is(counts, "SC_obj")){
     counts <- counts[]
   }
   if(!inherits(counts, "SingleCellExperiment")){
@@ -36,9 +36,10 @@ est_doublets <- function(counts, method = "hybrid"){
            calls = sce$cxds_call
          },
          "bcds" = {
-           sce = scds::cxds(sce, estNdbl =TRUE)
+           sce = scds::bcds(sce, estNdbl =TRUE)
            fDoublets = sce@metadata$bcds$ndbl["balanced",][3]
            calls = sce$bcds_call
+           list(as.numeric(fDoublets), calls)
          },
          "hybrid" = {
            sce = scds::cxds_bcds_hybrid(sce, estNdbl = TRUE)
