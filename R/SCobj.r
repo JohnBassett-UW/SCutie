@@ -17,6 +17,7 @@ SC_obj <- setClass(Class = "SC_obj",
                    slots = c(
                      raw.data = 'ANY',
                      HTO.counts = 'ANY',
+                     hto_obj = 'HTO_obj'
                      assay = 'list',
                      meta.data = 'data.frame',
                      graphs = 'list',
@@ -56,6 +57,47 @@ setGeneric("Graph", function(x, ...){
   standardGeneric("Graph")
 })
 
+setGeneric("Assay", function(x, pos){
+  standardGeneric("Assay")
+})
+
+setGeneric("Assay<-", function(x, assay.name, value){
+  standardGeneric("Assay<-")
+})
+
+setGeneric("HTO_counts", function(x){
+  standardGeneric("HTO_counts")
+})
+
+setMethod(f = "HTO_counts",
+          signature = signature(x = "SC_obj"),
+          definition = function(x){
+            return(slot(x, "HTO.counts"))
+          })
+
+setMethod(f = "Assay",
+          signature = signature(x = "SC_obj"),
+          definition = function(x, pos){
+            return(slot(x, "assay")[[pos]])
+          })
+
+setMethod(f = "Assay<-",
+          signature = signature(x = "SC_obj"),
+          definition = function(x, assay.name, value){
+            slot(x, "assay")[[assay.name]] <- value
+            return(x)
+          })
+
+#' Graph
+#'
+#' @param x SC_obj.
+#'
+#' @importFrom gridExtra grid.arrange
+#'
+#' @return gridExtra output for stored graphs
+#'
+#' @examples
+#' Graph(sc_obj, "Quality Check")
 setMethod(f = "Graph",
           signature = signature(x = "SC_obj"),
           definition = function(x, index){

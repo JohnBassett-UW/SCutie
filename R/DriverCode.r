@@ -9,8 +9,8 @@
 # sce <- detect_anomalies(sce, method = 'cxds')
 # Graph(sce, "Anomalies")
 # sce <- rm_anomalies(sce)
-#
-#
+
+
 # #Import and qc filter
 # QC_pipeline <- function(data.path){
 #   ptm = proc.time()
