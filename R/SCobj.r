@@ -10,14 +10,12 @@
 #'
 #' @return S4 object of class SC_obj
 #' @export
-#'
-#' @examples
-#' newSC_obj(GeX_counts)
 SC_obj <- setClass(Class = "SC_obj",
+                   contains = 'HTO_obj',
                    slots = c(
                      raw.data = 'ANY',
                      HTO.counts = 'ANY',
-                     hto_obj = 'HTO_obj'
+                     HTO.dmplex = 'HTO_obj',
                      assay = 'list',
                      meta.data = 'data.frame',
                      graphs = 'list',
@@ -68,6 +66,42 @@ setGeneric("Assay<-", function(x, assay.name, value){
 setGeneric("HTO_counts", function(x){
   standardGeneric("HTO_counts")
 })
+
+setGeneric("HTO.dmplex<-", function(x, value){
+  standardGeneric("HTO.dmplex<-")
+})
+
+setGeneric("HTO.build", function(x){
+  standardGeneric("HTO.build")
+})
+
+setMethod(f = "HTO.dmplex<-",
+          signature = signature(x = "SC_obj"),
+          definition = function(x, value){
+            slot(x, "HTO.dmplex") <- value
+            return(x)
+})
+
+setMethod(f = "HTO.build",
+          signature = signature("SC_obj"),
+          definition = function(x){
+            if(is.null(Assay(x, "anomalies_removed"))){
+              stop("Failed to build HTO object: assay does not exist")
+            }
+            cells.whiteList <- colnames(Assay(x, "anomalies_removed"))
+            filt.HTO <- HTO_counts(x)[,cells.whiteList]
+            filt.HTO <- HTO.format(filt.HTO)
+            CLR.HTO <- CLR(filt.HTO)
+            UMAP.dims <- generate_UMAP(CLR.HTO)
+            hto_obj <- new(Class = "HTO_obj",
+                                 HTO.matrix = filt.HTO,
+                                 HTO.CLR_norm = CLR.HTO,
+                                 UMAP = UMAP.dims,
+                                 graphs = plotHashes(CLR.HTO, UMAP.dims)
+                                 )
+            HTO.dmplex(x) <- ####Return work here to make sure that dmplex is properly attached to object
+          })
+
 
 setMethod(f = "HTO_counts",
           signature = signature(x = "SC_obj"),

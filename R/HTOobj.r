@@ -1,4 +1,14 @@
-SC_obj <- setClass(Class = "HTO_obj",
+#' HTO_obj
+#'
+#' @slot HTO.matrix ANY.
+#' @slot HTO.CLR_norm ANY.
+#' @slot UMAP matrix.
+#' @slot meta.data data.frame.
+#' @slot graphs list.
+#'
+#' @export
+#'
+HTO_obj <- setClass(Class = "HTO_obj",
                    slots = c(
                      HTO.matrix = 'ANY', #contains HTOcounts after filtering out outliers from sc_data
                      HTO.CLR_norm = 'ANY', #clr normalized filtered HTO counts
@@ -7,29 +17,6 @@ SC_obj <- setClass(Class = "HTO_obj",
                      graphs = 'list'
                    )
 )
-
-setGeneric("HTO.build", function(x, ...){
-  standardGeneric("HTO.build")
-})
-
-setMethod(f = "HTO.build",
-          signature = signature(x = "SC_obj"),
-          definition = function(x){
-            if(is.null(Assay(x, "anomalies_removed"))){
-              stop("Failed to build HTO object: assay does not exist")
-            }
-            cells.whiteList <- colnames(Assay(x, "anomalies_removed"))
-            filt.HTO <- HTO_counts(x)[,cells.whiteList]
-            filt.HTO <- HTO.format(filt.HTO)
-            CLR.HTO <- CLR(filt.HTO)
-            UMAP.dims <- generate_UMAP(CLR.HTO)
-            new(Class = "HTO_obj",
-                HTO.matrix = filt.HTO,
-                HTO.CLR_norm = CLR.HTO,
-                UMAP = UMAP.dims,
-                graphs = plotHashes(CLR.HTO, UMAP.dims)
-            )
-          })
 
 #' HTO.format
 #'
@@ -63,7 +50,7 @@ HTO.format <- function(UMI_count_matrix){
                                  },
 
                                  finally = {
-                                   cat("Succeeded")
+                                   cat("Succeeded \n")
                                  })
   }
   else{message("input class ", class(UMI_count_matrix))}
@@ -83,9 +70,9 @@ HTO.format <- function(UMI_count_matrix){
   if(length(columns.remove) == 0 ){
     cat("No bad columns detected \n")}
   else if(length(columns.remove) == 1){
-    message("one uninformative column removed: ", paste(columns.remove, collapse = " "))}
+    cat("one uninformative column removed: ", paste(columns.remove, collapse = " "), "\n")}
   else{
-    message(length(columns.remove), " uninformative columns removed: ", paste(columns.remove, collapse = " "))
+    cat(length(columns.remove), " uninformative columns removed: ", paste(columns.remove, collapse = " "), "\n")
   }
 
   cat("rows: ", nrow(UMI_count_matrix), ", columns: ", ncol(UMI_count_matrix), " \n")
@@ -134,7 +121,7 @@ generate_UMAP <- function(n.bar.table, n_neighbors = 50, min_dist = 0.1){
   n.bar.table[is.infinite(n.bar.table[])==TRUE] = 0
   #Generate UMAP via uwot package using default parameters
   cat("performing dimension reduction \n")
-  message("this may take a minute...")
+  cat("this may take a minute... \n")
   UMAP.res <- uwot::umap(n.bar.table,
                          n_neighbors = n_neighbors, #Size of Local neighborhood to constrain manifold learning
                          n_components = 2, #dimensions to embed to
