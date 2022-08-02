@@ -4,7 +4,7 @@
 \alias{detect_anomalies}
 \title{detect_anomalies}
 \usage{
-detect_anomalies(sc_obj, method = "isolation", verbose = T)
+detect_anomalies(sc_obj, method = "none", verbose = T)
 }
 \arguments{
 \item{sc_obj}{an sc_obj with attached QC}

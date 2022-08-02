@@ -99,6 +99,7 @@ detect_anomalies <- function(sc_obj, method = "none", verbose = T){
   cat("detecting anomalies... \n")
   sc_obj <- isolate(sc_obj)
 
+  #Anomaly Detection QC graph
   cat("generating anomaly detection QC...  \n")
   glist <- list()
   QC_cols <- colnames(sc_obj[[,2:4]])
@@ -113,6 +114,7 @@ detect_anomalies <- function(sc_obj, method = "none", verbose = T){
   cat("Attaching doublet estimates...  \n")
   metaData(sc_obj, col.name = "doublet_prediction") <- doublets[[2]]
 
+  #Doublet Estimation QC graph
   cat("generating doublet detection QC... \n")
   glist <- list()
   for(value in QC_cols){
@@ -120,7 +122,7 @@ detect_anomalies <- function(sc_obj, method = "none", verbose = T){
     glist <- c(glist, list(fplot))
   }
   complete_qc <- list(gridExtra::arrangeGrob(grobs = glist))
-  names(complete_qc) <- c("Anomalies")
+  names(complete_qc) <- c("Predicted_Doublets")
   graphs(sc_obj) <- complete_qc
 
 
@@ -160,10 +162,12 @@ rm_anomalies <- function(sc_obj){
 #'
 #' @param char_names
 #'
-#' @return
+#' @return a vector of unique column names
 #' @export
 #'
 #' @examples
+#' col.names <- colnames(metaData(sc_obj))
+#' col.names <- colnames.unique(col.names)
 colnames.unique <- function(char_names){ #accepts character vector of column names
   char_list <- strsplit(char_names, "\\.")
   name_terminus <- sapply(char_list, FUN = function(x){

@@ -4,14 +4,19 @@
 \name{SC_obj-class}
 \alias{SC_obj-class}
 \alias{SC_obj}
-\title{SC_obj}
+\title{SCobj}
+\value{
+S4 object of class SC_obj
+}
 \description{
-SC_obj
+SCobj
 }
 \section{Slots}{
 
 \describe{
 \item{\code{raw.data}}{ANY.}
+
+\item{\code{HTO.counts}}{ANY.}
 
 \item{\code{assay}}{list.}
 
@@ -24,3 +29,6 @@ SC_obj
 \item{\code{est_doublet_rate}}{numeric.}
 }}
 
+\examples{
+newSC_obj(GeX_counts)
+}

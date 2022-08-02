@@ -1,3 +1,18 @@
+#' SCobj
+#'
+#' @slot raw.data ANY.
+#' @slot HTO.counts ANY.
+#' @slot assay list.
+#' @slot meta.data data.frame.
+#' @slot graphs list.
+#' @slot ident factor.
+#' @slot est_doublet_rate numeric.
+#'
+#' @return S4 object of class SC_obj
+#' @export
+#'
+#' @examples
+#' newSC_obj(GeX_counts)
 SC_obj <- setClass(Class = "SC_obj",
                    slots = c(
                      raw.data = 'ANY',
@@ -15,7 +30,7 @@ setGeneric("newSC_obj", function(GeX_counts, ...){
 
 setGeneric("metaData", function(x){
   standardGeneric("metaData")
-  })
+})
 
 setGeneric("metaData<-", function(x, ...){
   standardGeneric("metaData<-")
@@ -217,4 +232,3 @@ setMethod(f= "graphs<-",
             slot(x, "graphs") <- append(slot(x, "graphs"), value)
             return(x)
           })
-
