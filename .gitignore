@@ -1,6 +1,7 @@
 .Rproj.user
 .Rbuildignore
 .Rhistory
+Dmultiplex.Rproj
 check_import10x.r
-DriverCode.r
+SCutie/R/DriverCode.r
 R/Not_used
