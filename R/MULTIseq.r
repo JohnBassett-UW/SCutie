@@ -174,13 +174,25 @@ HTO.Classify <- function(barTable){
   reclass.res <- rescueCells(barTable, final.calls, reclass.cells)
 
   final.calls.rescued_all <- final.calls
-  rescue.ind <- which(reclass.cells$ClassStability >= 0.5) ## Note: Value will be dataset-specific
+  rescue.ind <- which(reclass.cells$ClassStability >= 2) ## Note: Value will be dataset-specific
   final.calls.rescued_all[rownames(reclass.cells)[rescue.ind]] <- reclass.cells$Reclassification[rescue.ind]
 
   return(final.calls.rescued_all)
 }
 
 
+#' optimize_class
+#' takes a formatted table of HTO counts, and runs the MULTIseq classification
+#' algorithm optimizing singlets:doublets:negatives
+#'
+#' @param barTable Fomatted HTO count matrix from sc_obj slot HTO.dmplex slot HTO.matrix
+#'
+#' @importFrom ggplot2 ggplot aes geom_line ggtitle theme geom_vline scale_color_manual
+#'
+#' @return list of cell class calls
+#' @export
+#'
+#'
 optimize_class <- function(barTable){
   counter <- 0
   while (counter >= 0) {
@@ -189,12 +201,12 @@ optimize_class <- function(barTable){
     bar.table_sweep.list <- gen_sweep_list(barTable)
     threshold.results <- findThresh(call.list=bar.table_sweep.list)
     # ###QC###
-    print(ggplot(data=threshold.results$res, aes(x=q, y=Proportion, color=Subset)) +
-            geom_line() +
-            ggtitle(paste("round", counter)) +
-            theme(legend.position = "none") +
-            geom_vline(xintercept=threshold.results$extrema, lty=2) +
-            scale_color_manual(values=c("red","black","blue")))
+    print(ggplot2::ggplot(data=threshold.results$res, ggplot2::aes(x=q, y=Proportion, color=Subset)) +
+            ggplot2::geom_line() +
+            ggplot2::ggtitle(paste("round", counter)) +
+            ggplot2::theme(legend.position = "none") +
+            ggplot2::geom_vline(xintercept=threshold.results$extrema, lty=2) +
+            ggplot2::scale_color_manual(values=c("red","black","blue")))
     ########
     calls <- classify_cells(barTable, q=findQ(threshold.results$res, threshold.results$extrema))
     negs <- names(calls)[which(calls == "Negative")]
@@ -235,6 +247,17 @@ gen_sweep_list <- function(barTable){
   return(bar.table_sweep.list)
 }
 
+#' classify_cells
+#' Performs cell classification for a given quantile q
+#' @param barTable
+#' @param q
+#'
+#' @importFrom ggplot2 aes geom_point geom_vline ggtitle
+#'
+#' @return Calls for quantile q
+#'
+#'
+#'
 classify_cells <- function(barTable, q){
   ## Normalize Data: Log2 Transform, mean-center
   barTable.n <- as.data.frame(log2(barTable)) #log2 transform
@@ -273,12 +296,12 @@ classify_cells <- function(barTable, q){
     thresh <- quantile(c(x[high.extreme], x[low.extreme]), q)
 
     ### FOR QA ###
-     QA_out <- data.frame(x = model(x))
-     plot5 <- ggplot(QA_out, aes(y =x, x = 1:100)) +
-       geom_point() +
-       geom_vline(xintercept = c(low.extreme,high.extreme, which.min(abs(x - thresh))), color = c("blue", "red", "black")) +
-       ggtitle(paste(colnames(barTable.n[i]), " FINAL"))
-      plot5
+     # QA_out <- data.frame(x = model(x))
+     # plot5 <- ggplot2::ggplot(QA_out, ggplot2::aes(y =x, x = 1:100)) +
+     #   ggplot2::geom_point() +
+     #   ggplot2::geom_vline(xintercept = c(low.extreme,high.extreme, which.min(abs(x - thresh))), color = c("blue", "red", "black")) +
+     #   ggplot2::ggtitle(paste(colnames(barTable.n[i]), " FINAL"))
+     #  plot5
     cell_i <- which(barTable.n[,i] >= thresh)
     n <- length(cell_i)
     if (n == 0) { next } # Skip to next barcode if no cells classified

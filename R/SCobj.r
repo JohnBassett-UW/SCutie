@@ -63,8 +63,8 @@ setGeneric("Assay<-", function(x, assay.name, value){
   standardGeneric("Assay<-")
 })
 
-setGeneric("HTO_counts", function(x){
-  standardGeneric("HTO_counts")
+setGeneric("HTO_raw", function(x){
+  standardGeneric("HTO_raw")
 })
 
 setGeneric("HTO.dmplex<-", function(x, value){
@@ -74,6 +74,16 @@ setGeneric("HTO.dmplex<-", function(x, value){
 setGeneric("HTO.build", function(x){
   standardGeneric("HTO.build")
 })
+
+setGeneric("HTOs", function(x){
+  standardGeneric("HTOs")
+})
+
+setMethod(f = "HTOs",
+          signature = ("SC_obj"),
+          definition = function(x){
+            return(x@HTO.dmplex@HTO.matrix)
+          })
 
 setMethod(f = "HTO.dmplex<-",
           signature = signature(x = "SC_obj"),
@@ -89,7 +99,7 @@ setMethod(f = "HTO.build",
               stop("Failed to build HTO object: assay does not exist")
             }
             cells.whiteList <- colnames(Assay(x, "anomalies_removed"))
-            filt.HTO <- HTO_counts(x)[,cells.whiteList]
+            filt.HTO <- HTO_raw(x)[,cells.whiteList]
             filt.HTO <- HTO.format(filt.HTO)
             CLR.HTO <- CLR(filt.HTO)
             UMAP.dims <- generate_UMAP(CLR.HTO)
@@ -103,7 +113,7 @@ setMethod(f = "HTO.build",
           })
 
 
-setMethod(f = "HTO_counts",
+setMethod(f = "HTO_raw",
           signature = signature(x = "SC_obj"),
           definition = function(x){
             return(slot(x, "HTO.counts"))

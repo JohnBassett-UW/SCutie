@@ -13,7 +13,8 @@ HTO_obj <- setClass(Class = "HTO_obj",
                      HTO.matrix = 'ANY', #contains HTOcounts after filtering out outliers from sc_data
                      HTO.CLR_norm = 'ANY', #clr normalized filtered HTO counts
                      UMAP = 'matrix',
-                     meta.data = 'data.frame',
+                     classifications = 'data.frame',
+                     statistics = 'data.frame',
                      graphs = 'list'
                    )
 )
