@@ -88,10 +88,10 @@ quant_second_thresh <- function(model.x){
 force_classifycells <- function(barTable, q, QA = 1, est.doublet) {
 
   ## Normalize Data: Log2 Transform, mean-center
-  barTable.n <- as.data.frame(log2(barTable))
+  barTable.n <- as.data.frame(log2(barTable)) #log2 transform
   for (i in 1:ncol(barTable)) {
-    ind <- which(is.finite(barTable.n[,i]) == FALSE)
-    barTable.n[ind,i] <- 0
+    ind <- which(is.finite(barTable.n[,i]) == FALSE) #find indices of inf or -inf
+    barTable.n[ind,i] <- 0 #set inf values to 0
     barTable.n[,i] <- barTable.n[,i]-mean(barTable.n[,i])
   }
 
@@ -111,7 +111,7 @@ force_classifycells <- function(barTable, q, QA = 1, est.doublet) {
     ## Step 1: GKDE
     model <- tryCatch( { stats::approxfun(KernSmooth::bkde(barTable.n[,i], kernel="normal")) },
                        error=function(e) { print(paste0("No threshold found for ", colnames(barTable.n)[i],"...")) } )
-    if (class(model) == "character") { next }
+    if (is(model, "character")) { next }
     x <-  seq(from=quantile(barTable.n[,i],0.001), to=quantile(barTable.n[,i],0.999), length.out=100)
 
     extrema <- quant_first_thresh(model(x))

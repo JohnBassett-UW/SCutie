@@ -29,6 +29,3 @@ SCobj
 \item{\code{est_doublet_rate}}{numeric.}
 }}
 
-\examples{
-newSC_obj(GeX_counts)
-}

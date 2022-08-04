@@ -1,16 +1,27 @@
-# HTO_path <- "Z:/paddison_lab/John/scData/UW44scx/HTO_lib_Trt(UW44scx02)/U44scx02_HTO/umi_count"
-# GeX_path <- "C:/Users/basse/Documents/UW/scData_local/UW44/UW44scx_02/outs/filtered_feature_bc_matrix.h5"
-#
-# HTO_counts <- importX(HTO_path)
-# GeX_counts <- importX(GeX_path)
-# sce <- newSC_obj(GeX_counts, HTO_counts)
+# # HTO_path <- "Z:/paddison_lab/John/scData/UW44scx/HTO_lib_Trt(UW44scx02)/U44scx02_HTO/umi_count"
+# # GeX_path <- "C:/Users/basse/Documents/UW/scData_local/UW44/UW44scx_02/outs/filtered_feature_bc_matrix.h5"
+#  GeX_path <- "Z:/paddison_lab/John/scData/UW44scx/UW44scx_TimeCourse/outs/filtered_feature_bc_matrix.h5"
+#  HTO_path <- "Z:/paddison_lab/John/scData/UW44scx/HTO_lib_TimeCourse(UW44scx01)/umi_count/"
+# GeX.counts <- importX(GeX_path)
+# HTO.counts <- importX(HTO_path)
+# #GeX.counts <- GeX.counts[,colnames(HTO.counts)]
+# sce <- newSC_obj(GeX.counts, HTO.counts)
 # sce <- Attach_QC(sce)
 # Graph(sce, "Quality Check")
 # sce <- detect_anomalies(sce, method = 'cxds')
 # Graph(sce, "Anomalies")
 # sce <- rm_anomalies(sce)
-# HTO.build(sce)
-#
+# sce <- HTO.build(sce)
+
+# View(classifications)
+# # barTable <- sce@HTO.dmplex@HTO.matrix
+# # barTable <- barTable[,1:5]
+# # bar.table_sweep.list <- gen_sweep_list(barTable)
+# ggplot(as.data.frame(sce@HTO.dmplex@UMAP[names(classifications),]), aes(x=UMAP1, y=UMAP2, color=classifications)) +
+#   geom_point(size=0.5) +
+#   theme_classic() +
+#   scale_color_manual(values=c("dodgerblue","grey","darkred","seagreen","darkorchid3","pink","black","goldenrod"))
+# classifications <- HTO.Classify(barTable)
 
 # #Import and qc filter
 # # QC_pipeline <- function(data.path){

@@ -96,6 +96,7 @@ CLR <- function(bar.table) {
   bar.table <- apply(bar.table, MARGIN = 2, FUN = function(x){
     log(x=x/exp(x=sum(log(x=x[x>0]), na.rm = TRUE)/length(x=x)))
   })
+  bar.table[is.infinite(bar.table[])==TRUE] = 0
   return(bar.table)
 }
 

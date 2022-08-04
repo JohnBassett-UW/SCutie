@@ -93,13 +93,13 @@ setMethod(f = "HTO.build",
             filt.HTO <- HTO.format(filt.HTO)
             CLR.HTO <- CLR(filt.HTO)
             UMAP.dims <- generate_UMAP(CLR.HTO)
-            hto_obj <- new(Class = "HTO_obj",
+            HTO.dmplex(x) <- new(Class = "HTO_obj",
                                  HTO.matrix = filt.HTO,
                                  HTO.CLR_norm = CLR.HTO,
                                  UMAP = UMAP.dims,
                                  graphs = plotHashes(CLR.HTO, UMAP.dims)
                                  )
-            HTO.dmplex(x) <- ####Return work here to make sure that dmplex is properly attached to object
+            return(x)
           })
 
 
@@ -260,6 +260,13 @@ setMethod(f = "newSC_obj",
             if(all(GeXnames[seq.int(2, length(GeXnames),2)] == "1")){
               GeX_counts <- remove1(GeX_counts)
             }
+            #detection and removal of trailing "-1" from HTO.counts
+            HTOnames <- unlist(
+              strsplit(colnames(HTO_counts), "-"),
+              use.names = T)
+            if(all(HTOnames[seq.int(2, length(HTOnames),2)] == "1")){
+              HTO_counts <- remove1(HTO_counts)
+            }
             #Check that GeX and HTO cell IDS Match
             if(!missing(HTO_counts)){
               ID.diffs <- match(colnames(GeX_counts), colnames(HTO_counts))
@@ -270,6 +277,10 @@ setMethod(f = "newSC_obj",
                 outMessage <- gsub("current", "HTO_cell_IDs",
                                    gsub("target", "GeX_cell_IDs", outMessage))
                 warning(outMessage)
+                if(dim(GeX_counts)[2] > dim(HTO_counts)[2]){
+                  message(dim(GeX_counts)[2]-dim(HTO_counts)[2], " cell Ids removed")
+                  GeX_counts <- GeX_counts[,colnames(HTO_counts)]
+                }
               }
             }#create new SC_obj
             new(Class = "SC_obj",
