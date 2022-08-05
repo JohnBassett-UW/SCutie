@@ -138,6 +138,7 @@ setMethod(f = "Assay<-",
 #'
 #' @importFrom gridExtra grid.arrange
 #'
+#' @export
 #' @return gridExtra output for stored graphs
 #'
 #' @examples
