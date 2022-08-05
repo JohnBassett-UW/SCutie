@@ -79,6 +79,15 @@ setGeneric("HTOs", function(x){
   standardGeneric("HTOs")
 })
 
+#' HTOs
+#' retrieve HTO count table formatted for demultiplexing
+#' @param SC_obj
+#'
+#' @return Table of Hashtag counts (barTable)
+#' @export
+#'
+#' @example
+#' HTOs(sc_obj)
 setMethod(f = "HTOs",
           signature = ("SC_obj"),
           definition = function(x){
