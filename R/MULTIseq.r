@@ -249,8 +249,8 @@ gen_sweep_list <- function(barTable){
 
 #' classify_cells
 #' Performs cell classification for a given quantile q
-#' @param barTable
-#' @param q
+#' @param barTable Formatted table of barcode counts
+#' @param q quantile to use for classification
 #'
 #' @importFrom ggplot2 aes geom_point geom_vline ggtitle
 #'

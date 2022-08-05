@@ -8,7 +8,9 @@ Performs cell classification for a given quantile q}
 classify_cells(barTable, q)
 }
 \arguments{
-\item{q}{}
+\item{barTable}{Formatted table of barcode counts}
+
+\item{q}{quantile to use for classification}
 }
 \value{
 Calls for quantile q
