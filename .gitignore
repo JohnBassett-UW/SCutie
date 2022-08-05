@@ -1,7 +1,8 @@
 .Rproj.user
 .Rbuildignore
 .Rhistory
-Dmultiplex.Rproj
+R/Dmultiplex.Rproj
 check_import10x.r
-SCutie/R/DriverCode.r
+R/DriverCode.r
 R/Not_used
+R/gen_whitelist.r

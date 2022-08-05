@@ -244,6 +244,19 @@ setMethod(f = "est_doublet_rate<-",
             return(x)
           })
 
+#' newSC_obj
+#' generates a single cell object.
+#'
+#' @param GeX_counts Takes a matrix of GeX counts in the form of a dgCMatrix.
+#' @param HTO_counts Optionally accepts a matrix of HTO counts in the form of a dgCMatrix
+#'
+#' @return a single cell object with generated meta data.
+#' @export
+#'
+#' @examples
+#' newSC_obj(GeX_counts)
+#' ##optionally##
+#' newSC_obj(Gex_counts, HTO_counts)
 setMethod(f = "newSC_obj",
           signature = signature(GeX_counts = "dgCMatrix"),
           definition = function(GeX_counts, HTO_counts){
