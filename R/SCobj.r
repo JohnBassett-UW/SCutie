@@ -283,15 +283,15 @@ setMethod(f = "newSC_obj",
             if(all(GeXnames[seq.int(2, length(GeXnames),2)] == "1")){
               GeX_counts <- remove1(GeX_counts)
             }
-            #detection and removal of trailing "-1" from HTO.counts
-            HTOnames <- unlist(
-              strsplit(colnames(HTO_counts), "-"),
-              use.names = T)
-            if(all(HTOnames[seq.int(2, length(HTOnames),2)] == "1")){
-              HTO_counts <- remove1(HTO_counts)
-            }
             #Check that GeX and HTO cell IDS Match
             if(!missing(HTO_counts)){
+              #detection and removal of trailing "-1" from HTO.counts
+              HTOnames <- unlist(
+                strsplit(colnames(HTO_counts), "-"),
+                use.names = T)
+              if(all(HTOnames[seq.int(2, length(HTOnames),2)] == "1")){
+                HTO_counts <- remove1(HTO_counts)
+              }
               ID.diffs <- match(colnames(GeX_counts), colnames(HTO_counts))
               if(!identical(colnames(GeX_counts),
                             colnames(HTO_counts)[ID.diffs])){
