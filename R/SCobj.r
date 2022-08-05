@@ -92,6 +92,19 @@ setMethod(f = "HTO.dmplex<-",
             return(x)
 })
 
+#' HTO.build
+#' Build an HTO_obj to attach to SC_obj.
+#' The HTO_obj contains the formatting and transformations necessary to perfrom
+#' demultiplexing using MULTI-seq by Chris Mcginnis
+#'
+#'
+#' @param x SC_obj.
+#'
+#' @return an SC_obj containing the built HTO_obj
+#' @export
+#'
+#' @examples
+#' HTO.build(sc_obj)
 setMethod(f = "HTO.build",
           signature = signature("SC_obj"),
           definition = function(x){
