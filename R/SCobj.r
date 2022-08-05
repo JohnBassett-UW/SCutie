@@ -86,8 +86,6 @@ setGeneric("HTOs", function(x){
 #' @return Table of Hashtag counts (barTable)
 #' @export
 #'
-#' @example
-#' HTOs(sc_obj)
 setMethod(f = "HTOs",
           signature = ("SC_obj"),
           definition = function(x){
